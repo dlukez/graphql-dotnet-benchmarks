@@ -17,8 +17,7 @@ namespace GraphQL.Benchmarks.Schemas.BatchResolver
 
             Field<ListGraphType<CharacterInterface>>()
                 .Name("friends")
-                .Batch(d => d.DroidId)
-                .Resolve(ctx =>
+                .BatchResolve(d => d.DroidId, ctx =>
                 {
                     var ids = ctx.Source;
                     var db = ctx.GetDataContext();
@@ -30,8 +29,7 @@ namespace GraphQL.Benchmarks.Schemas.BatchResolver
 
             Field<ListGraphType<EpisodeType>>()
                 .Name("appearsIn")
-                .Batch(d => d.DroidId)
-                .Resolve(ctx =>
+                .BatchResolve(d => d.DroidId, ctx =>
                 {
                     var ids = ctx.Source;
                     var db = ctx.GetDataContext();

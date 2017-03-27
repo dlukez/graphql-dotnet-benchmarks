@@ -14,18 +14,15 @@ namespace GraphQL.Benchmarks.Schemas.BatchResolver
 
             Field<ListGraphType<HumanType>>()
                 .Name("humans")
-                .Batch()
-                .Resolve(ctx => Task.FromResult((IEnumerable<Human>)ctx.GetDataContext().Humans.ToList()));
+                .ResolveCollection(ctx => ctx.GetDataContext().Humans.ToList());
 
             Field<ListGraphType<DroidType>>()
                 .Name("droids")
-                .Batch()
-                .Resolve(ctx => Task.FromResult((IEnumerable<Droid>)ctx.GetDataContext().Droids.ToList()));
+                .ResolveCollection(ctx => ctx.GetDataContext().Droids.ToList());
 
             Field<ListGraphType<EpisodeType>>()
                 .Name("episodes")
-                .Batch()
-                .Resolve(ctx => Task.FromResult((IEnumerable<Episode>)ctx.GetDataContext().Episodes.ToList()));
+                .ResolveCollection(ctx => ctx.GetDataContext().Episodes.ToList());
         }
     }
 }

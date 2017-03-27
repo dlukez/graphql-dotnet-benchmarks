@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using GraphQL.Types;
 using GraphQL.BatchResolver;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
 namespace GraphQL.Benchmarks.Schemas.BatchResolver
@@ -17,8 +16,7 @@ namespace GraphQL.Benchmarks.Schemas.BatchResolver
 
             Field<ListGraphType<CharacterInterface>>()
                 .Name("characters")
-                .Batch(e => e.EpisodeId)
-                .Resolve(ctx =>
+                .BatchResolve(e => e.EpisodeId, ctx =>
                 {
                     var ids = ctx.Source;
                     var db = ctx.GetDataContext();
@@ -33,7 +31,7 @@ namespace GraphQL.Benchmarks.Schemas.BatchResolver
                         .Include(da => da.Droid)
                         .ToList<ICharacterAppearance>();
 
-                    return Task.FromResult(humans.Concat(droids).ToLookup(a => a.EpisodeId, a => a.Character));
+                    return humans.Concat(droids).ToLookup(a => a.EpisodeId, a => a.Character);
                 });
         }
     }
