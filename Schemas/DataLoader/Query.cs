@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading.Tasks;
 using GraphQL.Types;
 
 namespace GraphQL.Benchmarks.Schemas.DataLoader
@@ -11,15 +12,15 @@ namespace GraphQL.Benchmarks.Schemas.DataLoader
 
             Field<ListGraphType<HumanType>>()
                 .Name("humans")
-                .Resolve(ctx => ctx.GetDataContext().Humans.ToList());
+                .Resolve(ctx => Task.FromResult(ctx.GetDataContext().Humans.ToList()));
 
             Field<ListGraphType<DroidType>>()
                 .Name("droids")
-                .Resolve(ctx => ctx.GetDataContext().Droids.ToList());
+                .Resolve(ctx => Task.FromResult(ctx.GetDataContext().Droids.ToList()));
 
             Field<ListGraphType<EpisodeType>>()
                 .Name("episodes")
-                .Resolve(ctx => ctx.GetDataContext().Episodes.ToList());
+                .Resolve(ctx => Task.FromResult(ctx.GetDataContext().Episodes.ToList()));
         }
     }
 }

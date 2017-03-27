@@ -6,9 +6,9 @@ namespace GraphQL.Benchmarks
     public class TestDataOptions
     {
         public int Seed { get; set; } = 42;
-        public int NumberOfHumans { get; set; } = 1000;
-        public int NumberOfDroids { get; set; } = 1000;
-        public int NumberOfFriendships { get; set; } = 1500;
+        public int NumberOfHumans { get; set; } = 50;
+        public int NumberOfDroids { get; set; } = 50;
+        public int NumberOfFriendships { get; set; } = 100;
         public int NumberOfAppearances { get; set; } = 2;
     }
 

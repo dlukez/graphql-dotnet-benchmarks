@@ -1,8 +1,11 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace GraphQL.Benchmarks {
-    public class StarWarsContext : DbContext {
+namespace GraphQL.Benchmarks
+{
+    public class StarWarsContext : DbContext
+    {
         public DbSet<Human> Humans { get; set; }
         public DbSet<Droid> Droids { get; set; }
         public DbSet<Friendship> Friendships { get; set; }
@@ -10,21 +13,27 @@ namespace GraphQL.Benchmarks {
         public DbSet<DroidAppearance> DroidAppearances { get; set; }
         public DbSet<HumanAppearance> HumanAppearances { get; set; }
 
-        protected override void OnConfiguring (DbContextOptionsBuilder builder) {
-            builder.UseSqlite ("Filename=./database.db");
+        protected override void OnConfiguring(DbContextOptionsBuilder builder)
+        {
+            Console.WriteLine("// Configuring context to use in-memory DB");
+            builder.UseInMemoryDatabase();
+            // builder.UseSqlite ("Filename=./database.db");
         }
     }
 
-    public interface INode {
+    public interface INode
+    {
         int Id { get; }
     }
 
-    public interface ICharacter {
+    public interface ICharacter
+    {
         string Name { get; set; }
         List<Friendship> Friendships { get; set; }
     }
 
-    public class Human : ICharacter, INode {
+    public class Human : ICharacter, INode
+    {
         int INode.Id => HumanId;
         public int HumanId { get; set; }
         public string Name { get; set; }
@@ -32,12 +41,14 @@ namespace GraphQL.Benchmarks {
         public List<Friendship> Friendships { get; set; }
         public List<HumanAppearance> Appearances { get; set; }
 
-        public override string ToString () {
+        public override string ToString ()
+        {
             return HumanId.ToString ();
         }
     }
 
-    public class Friendship {
+    public class Friendship
+    {
         public int FriendshipId { get; set; }
         public int HumanId { get; set; }
         public int DroidId { get; set; }
@@ -45,7 +56,8 @@ namespace GraphQL.Benchmarks {
         public Droid Droid { get; set; }
     }
 
-    public class Droid : ICharacter, INode {
+    public class Droid : ICharacter, INode
+    {
         int INode.Id => DroidId;
         public int DroidId { get; set; }
         public string Name { get; set; }
@@ -58,14 +70,16 @@ namespace GraphQL.Benchmarks {
         }
     }
 
-    public interface ICharacterAppearance {
+    public interface ICharacterAppearance
+    {
         int EpisodeId { get; }
         Episode Episode { get; }
         int CharacterId { get; }
         ICharacter Character { get; }
     }
 
-    public class DroidAppearance : ICharacterAppearance, INode {
+    public class DroidAppearance : ICharacterAppearance, INode
+    {
         int INode.Id => DroidAppearanceId;
         public int DroidAppearanceId { get; set; }
         public int EpisodeId { get; set; }
@@ -76,7 +90,8 @@ namespace GraphQL.Benchmarks {
         ICharacter ICharacterAppearance.Character => Droid;
     }
 
-    public class HumanAppearance : ICharacterAppearance, INode {
+    public class HumanAppearance : ICharacterAppearance, INode
+    {
         int INode.Id => HumanAppearanceId;
         public int HumanAppearanceId { get; set; }
         public int EpisodeId { get; set; }
@@ -87,7 +102,8 @@ namespace GraphQL.Benchmarks {
         ICharacter ICharacterAppearance.Character => Human;
     }
 
-    public class Episode : INode {
+    public class Episode : INode
+    {
         int INode.Id => EpisodeId;
         public int EpisodeId { get; set; }
         public string Name { get; set; }

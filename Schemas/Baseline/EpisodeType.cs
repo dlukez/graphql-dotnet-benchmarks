@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using GraphQL.Types;
+using Microsoft.EntityFrameworkCore;
 
 namespace GraphQL.Benchmarks.Schemas.Baseline
 {
@@ -13,15 +14,13 @@ namespace GraphQL.Benchmarks.Schemas.Baseline
             Field("id", e => e.EpisodeId);
             Field("name", e => e.Name);
 
-            Field<ListGraphType<CharacterInterface>>()
-                .Name("characters")
-                .Resolve(ctx =>
-                {
-                    var db = ctx.GetDataContext();
-                    var humans = db.HumanAppearances.Where(ha => ctx.Source.EpisodeId == ha.EpisodeId).Select(ha => ha.Human).ToList();
-                    var droids = db.DroidAppearances.Where(da => ctx.Source.EpisodeId == da.EpisodeId).Select(da => da.Droid).ToList();
-                    return Task.FromResult(humans.Concat<ICharacter>(droids));
-                });
+            FieldAsync<ListGraphType<CharacterInterface>>("characters", resolve: async ctx =>
+            {
+                var db = ctx.GetDataContext();
+                var humans = await db.HumanAppearances.Where(ha => ctx.Source.EpisodeId == ha.EpisodeId).Select(ha => ha.Human).ToListAsync();
+                var droids = await db.DroidAppearances.Where(da => ctx.Source.EpisodeId == da.EpisodeId).Select(da => da.Droid).ToListAsync();
+                return humans.Concat<ICharacter>(droids);
+            });
         }
     }
 

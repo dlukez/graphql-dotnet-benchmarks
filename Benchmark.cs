@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Attributes.Exporters;
+using BenchmarkDotNet.Attributes.Jobs;
 using DataLoader;
 using GraphQL.Benchmarks.Schemas.Baseline;
 using GraphQL.Benchmarks.Schemas.BatchResolver;
 using GraphQL.Benchmarks.Schemas.DataLoader;
 
-
 namespace GraphQL.Benchmarks
 {
-    [RPlotExporter]
+    [CoreJob]
     [MemoryDiagnoser]
     public class GraphQL_BatchedIOPerformance
     {
@@ -49,8 +48,6 @@ fragment Fields on Character {
 
         public GraphQL_BatchedIOPerformance()
         {
-            Console.WriteLine($"Creating benchmark harness");
-
             _executer = new DocumentExecuter();
 
             _baselineOptions = new ExecutionOptions();
@@ -64,18 +61,27 @@ fragment Fields on Character {
             _batchResolverOptions = new ExecutionOptions();
             _batchResolverOptions.Query = _query;
             _batchResolverOptions.Schema = new BatchResolverSchema();
+
+            Console.WriteLine("// Initializing DB...");
+            TestDataGenerator.InitializeDb();
+            Console.WriteLine("// Done.");
         }
 
         [Setup]
         public void Setup()
         {
+            Console.WriteLine("// Setting up UserContext...");
             _userContext = new UserContext();
+            Console.WriteLine("// Done.");
         }
 
         [Cleanup]
         public void Cleanup()
         {
+            Console.WriteLine("// Cleaning up UserContext...");
             _userContext.DataContext.Dispose();
+            _userContext = null;
+            Console.WriteLine("// Done.");
         }
 
         [Benchmark(Baseline = true)]

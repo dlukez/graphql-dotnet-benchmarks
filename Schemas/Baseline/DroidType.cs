@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using GraphQL.Types;
+using Microsoft.EntityFrameworkCore;
 
 namespace GraphQL.Benchmarks.Schemas.Baseline
 {
@@ -19,7 +20,7 @@ namespace GraphQL.Benchmarks.Schemas.Baseline
                 .Resolve(ctx =>
                 {
                     var db = ctx.GetDataContext();
-                    return Task.FromResult(db.Friendships.Where(f => f.DroidId == ctx.Source.DroidId).Select(f => (ICharacter)f.Human).ToList());
+                    return db.Friendships.Where(f => f.DroidId == ctx.Source.DroidId).Select(f => (ICharacter)f.Human).ToListAsync();
                 });
 
             Field<ListGraphType<EpisodeType>>()
@@ -27,7 +28,7 @@ namespace GraphQL.Benchmarks.Schemas.Baseline
                 .Resolve(ctx =>
                 {
                     var db = ctx.GetDataContext();
-                    return Task.FromResult(db.DroidAppearances.Where(da => da.DroidId == ctx.Source.DroidId).Select(da => da.Episode).ToList());
+                    return db.DroidAppearances.Where(da => da.DroidId == ctx.Source.DroidId).Select(da => da.Episode).ToListAsync();
                 });
         }
     }

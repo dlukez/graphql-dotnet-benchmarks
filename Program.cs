@@ -1,9 +1,9 @@
-﻿//using BenchmarkDotNet.Running;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+using BenchmarkDotNet.Running;
 using GraphQL.Http;
 
 namespace GraphQL.Benchmarks
@@ -12,15 +12,20 @@ namespace GraphQL.Benchmarks
     {
         public static void Main()
         {
+            BenchmarkRunner.Run<GraphQL_BatchedIOPerformance>();
+            // RunTests().Wait();
+        }
+
+        private static async Task RunTests()
+        {
             TestDataGenerator.InitializeDb();
 
             var writer = new DocumentWriter(true);
-
             var results = new List<ExecutionResult>();
-
-            results.Add(RunTest("Baseline", _ => _.Baseline()).Result);
-            results.Add(RunTest("DataLoader", _ => _.DataLoader()).Result);
-            results.Add(RunTest("BatchResolver", _ => _.BatchResolver()).Result);
+            
+            results.Add(await RunTest("Baseline", _ => _.Baseline()));
+            results.Add(await RunTest("DataLoader", _ => _.DataLoader()));
+            results.Add(await RunTest("BatchResolver", _ => _.BatchResolver()));
 
             for (var i = 0; i < results.Count; i++)
             {
