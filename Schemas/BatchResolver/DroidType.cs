@@ -22,10 +22,10 @@ namespace GraphQL.Benchmarks.Schemas.BatchResolver
                 {
                     var ids = ctx.Source;
                     var db = ctx.GetDataContext();
-                    return db.Friendships
+                    return Task.FromResult(db.Friendships
                             .Where(f => ids.Contains(f.DroidId))
                             .Include(f => f.Human)
-                            .ToLookup(x => x.DroidId, x => (ICharacter)x.Human);
+                            .ToLookup(x => x.DroidId, x => (ICharacter)x.Human));
                 });
 
             Field<ListGraphType<EpisodeType>>()
@@ -35,10 +35,10 @@ namespace GraphQL.Benchmarks.Schemas.BatchResolver
                 {
                     var ids = ctx.Source;
                     var db = ctx.GetDataContext();
-                    return db.DroidAppearances
+                    return Task.FromResult(db.DroidAppearances
                             .Where(da => ids.Contains(da.DroidId))
                             .Include(da => da.Episode)
-                            .ToLookup(x => x.DroidId, x => x.Episode);
+                            .ToLookup(x => x.DroidId, x => x.Episode));
                 });
                 
             Interface<CharacterInterface>();

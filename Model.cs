@@ -15,9 +15,8 @@ namespace GraphQL.Benchmarks
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
-            Console.WriteLine("// Configuring context to use in-memory DB");
-            builder.UseInMemoryDatabase();
-            // builder.UseSqlite ("Filename=./database.db");
+            // builder.UseInMemoryDatabase();
+            builder.UseSqlite("Data Source=database.db");
         }
     }
 

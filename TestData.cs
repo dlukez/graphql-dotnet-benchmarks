@@ -6,9 +6,9 @@ namespace GraphQL.Benchmarks
     public class TestDataOptions
     {
         public int Seed { get; set; } = 42;
-        public int NumberOfHumans { get; set; } = 50;
-        public int NumberOfDroids { get; set; } = 50;
-        public int NumberOfFriendships { get; set; } = 100;
+        public int NumberOfHumans { get; set; } = 100;
+        public int NumberOfDroids { get; set; } = 100;
+        public int NumberOfFriendships { get; set; } = 200;
         public int NumberOfAppearances { get; set; } = 2;
     }
 
@@ -20,6 +20,8 @@ namespace GraphQL.Benchmarks
         {
             using (var db = new StarWarsContext())
             {
+                db.Database.EnsureCreated();
+
                 db.Droids.RemoveRange(db.Droids);
                 db.Humans.RemoveRange(db.Humans);
                 db.Episodes.RemoveRange(db.Episodes);
