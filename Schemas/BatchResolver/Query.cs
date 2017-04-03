@@ -1,8 +1,8 @@
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using GraphQL.BatchResolver;
+using GraphQL.BatchResolver.TaskExtensions;
 using GraphQL.Types;
+using Microsoft.EntityFrameworkCore;
 
 namespace GraphQL.Benchmarks.Schemas.BatchResolver
 {
@@ -15,17 +15,17 @@ namespace GraphQL.Benchmarks.Schemas.BatchResolver
             Field<ListGraphType<HumanType>>()
                 .Name("humans")
                 .Batch()
-                .Resolve(ctx => Task.FromResult((IEnumerable<Human>)ctx.GetDataContext().Humans.ToList()));
+                .Resolve(ctx => ctx.GetDataContext().Humans.ToListAsync().AsEnumerable());
 
             Field<ListGraphType<DroidType>>()
                 .Name("droids")
                 .Batch()
-                .Resolve(ctx => Task.FromResult((IEnumerable<Droid>)ctx.GetDataContext().Droids.ToList()));
+                .Resolve(ctx => ctx.GetDataContext().Droids.ToListAsync().AsEnumerable());
 
             Field<ListGraphType<EpisodeType>>()
                 .Name("episodes")
                 .Batch()
-                .Resolve(ctx => Task.FromResult((IEnumerable<Episode>)ctx.GetDataContext().Episodes.ToList()));
+                .Resolve(ctx => ctx.GetDataContext().Episodes.ToListAsync().AsEnumerable());
         }
     }
 }

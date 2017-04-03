@@ -17,24 +17,26 @@ namespace GraphQL.Benchmarks.Schemas.DataLoader
 
             Field<ListGraphType<CharacterInterface>>()
                 .Name("friends")
-                .Resolve(ctx => ctx.GetDataLoader(ids =>
+                .Resolve(ctx => ctx.GetDataLoader(async ids =>
                     {
                         var db = ctx.GetDataContext();
-                        return Task.FromResult(db.Friendships
+                        return (await db.Friendships
                             .Where(f => ids.Contains(f.HumanId))
                             .Include(f => f.Droid)
-                            .ToLookup(x => x.HumanId, x => (ICharacter)x.Droid));
+                            .ToListAsync())
+                            .ToLookup(x => x.HumanId, x => (ICharacter)x.Droid);
                     }).LoadAsync(ctx.Source.HumanId));
 
             Field<ListGraphType<EpisodeType>>()
                 .Name("appearsIn")
-                .Resolve(ctx => ctx.GetDataLoader(ids =>
+                .Resolve(ctx => ctx.GetDataLoader(async ids =>
                     {
                         var db = ctx.GetDataContext();
-                        return Task.FromResult(db.HumanAppearances
+                        return (await db.HumanAppearances
                             .Where(ha => ids.Contains(ha.HumanId))
                             .Include(ha => ha.Episode)
-                            .ToLookup(x => x.HumanId, x => x.Episode));
+                            .ToListAsync())
+                            .ToLookup(x => x.HumanId, x => x.Episode);
                     }).LoadAsync(ctx.Source.HumanId));
         }
     }

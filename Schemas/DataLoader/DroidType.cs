@@ -1,6 +1,7 @@
 using System.Linq;
 using GraphQL.Types;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace GraphQL.Benchmarks.Schemas.DataLoader
 {
@@ -16,25 +17,26 @@ namespace GraphQL.Benchmarks.Schemas.DataLoader
 
             Field<ListGraphType<CharacterInterface>>()
                 .Name("friends")
-                .Resolve(ctx => ctx.GetDataLoader(ids =>
+                .Resolve(ctx => ctx.GetDataLoader(async ids =>
                     {
                         var db = ctx.GetDataContext();
-                        return Task.FromResult(db.Friendships
+                        return (await db.Friendships
                             .Where(f => ids.Contains(f.DroidId))
                             .Select(f => new {Key = f.DroidId, f.Human})
-                            .ToLookup(x => x.Key, x => (ICharacter)x.Human));
+                            .ToListAsync())
+                            .ToLookup(x => x.Key, x => (ICharacter)x.Human);
                     }).LoadAsync(ctx.Source.DroidId));
 
             Field<ListGraphType<EpisodeType>>()
                 .Name("appearsIn")
-                .Resolve(ctx => ctx.GetDataLoader(ids =>
+                .Resolve(ctx => ctx.GetDataLoader(async ids =>
                     {
                         var db = ctx.GetDataContext();
-                        return Task.FromResult(
-                            db.DroidAppearances
+                        return (await db.DroidAppearances
                                 .Where(da => ids.Contains(da.DroidId))
                                 .Select(da => new {Key = da.DroidId, da.Episode})
-                                .ToLookup(x => x.Key, x => x.Episode));
+                                .ToListAsync())
+                                .ToLookup(x => x.Key, x => x.Episode);
                     }).LoadAsync(ctx.Source.DroidId));
         }
     }

@@ -8,8 +8,7 @@ using System.Threading.Tasks;
 
 namespace GraphQL.Benchmarks
 {
-    [ShortRunJob]
-    [MemoryDiagnoser]
+    [CoreJob]
     public class GraphQL_BatchedIOPerformance
     {
         private const string _query = @"

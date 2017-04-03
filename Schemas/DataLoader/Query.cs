@@ -1,6 +1,5 @@
-using System.Linq;
-using System.Threading.Tasks;
 using GraphQL.Types;
+using Microsoft.EntityFrameworkCore;
 
 namespace GraphQL.Benchmarks.Schemas.DataLoader
 {
@@ -12,15 +11,15 @@ namespace GraphQL.Benchmarks.Schemas.DataLoader
 
             Field<ListGraphType<HumanType>>()
                 .Name("humans")
-                .Resolve(ctx => Task.FromResult(ctx.GetDataContext().Humans.ToList()));
+                .Resolve(ctx => ctx.GetDataContext().Humans.ToListAsync());
 
             Field<ListGraphType<DroidType>>()
                 .Name("droids")
-                .Resolve(ctx => Task.FromResult(ctx.GetDataContext().Droids.ToList()));
+                .Resolve(ctx => ctx.GetDataContext().Droids.ToListAsync());
 
             Field<ListGraphType<EpisodeType>>()
                 .Name("episodes")
-                .Resolve(ctx => Task.FromResult(ctx.GetDataContext().Episodes.ToList()));
+                .Resolve(ctx => ctx.GetDataContext().Episodes.ToListAsync());
         }
     }
 }
