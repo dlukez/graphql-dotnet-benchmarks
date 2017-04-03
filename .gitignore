@@ -1,3 +1,9 @@
+# BenchmarkDotNet (custom for project)
+BenchmarkDotNet.Artifacts/
+
+########################################
+
+# VSCode
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
