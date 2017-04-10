@@ -5,10 +5,11 @@ using GraphQL.Benchmarks.Schemas.Baseline;
 using GraphQL.Benchmarks.Schemas.BatchResolver;
 using GraphQL.Benchmarks.Schemas.DataLoader;
 using System.Threading.Tasks;
+using GraphQL.Benchmarks.Schemas.NodeCollection;
 
 namespace GraphQL.Benchmarks
 {
-    [CoreJob]
+    [ShortRunJob]
     public class GraphQL_BatchedIOPerformance
     {
         private const string _query = @"
@@ -46,6 +47,7 @@ fragment CharacterFields on Character {
         private ExecutionOptions _dataLoaderOptions;
         private ExecutionOptions _batchResolverOptions;
         private ExecutionOptions _baselineOptions;
+        private ExecutionOptions _nodeCollectionOptions;
 
         public GraphQL_BatchedIOPerformance()
         {
@@ -62,6 +64,10 @@ fragment CharacterFields on Character {
             _batchResolverOptions = new ExecutionOptions();
             _batchResolverOptions.Query = _query;
             _batchResolverOptions.Schema = new BatchResolverSchema();
+
+            _nodeCollectionOptions = new ExecutionOptions();
+            _nodeCollectionOptions.Query = _query;
+            _nodeCollectionOptions.Schema = new NodeCollectionSchema();
 
             TestDataGenerator.InitializeDb();
         }
@@ -102,6 +108,13 @@ fragment CharacterFields on Character {
         {
             _batchResolverOptions.UserContext = _userContext;
             return _executer.ExecuteAsync(_batchResolverOptions);
+        }
+
+        [Benchmark]
+        public Task<ExecutionResult> NodeCollection()
+        {
+            _nodeCollectionOptions.UserContext = _userContext;
+            return _executer.ExecuteAsync(_nodeCollectionOptions);
         }
     }
 }

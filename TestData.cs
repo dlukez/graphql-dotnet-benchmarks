@@ -16,16 +16,21 @@ namespace GraphQL.Benchmarks
     {
         public static void InitializeDb() => InitializeDb(new TestDataOptions());
 
-        public static void InitializeDb(TestDataOptions options)
+        public static void InitializeDb(TestDataOptions options, bool repopulate = false)
         {
             using (var db = new StarWarsContext())
             {
-                db.Database.EnsureCreated();
-
-                db.Droids.RemoveRange(db.Droids);
-                db.Humans.RemoveRange(db.Humans);
-                db.Episodes.RemoveRange(db.Episodes);
-                db.SaveChanges();
+                if (!db.Database.EnsureCreated())
+                {
+                    return;
+                }
+                else if (repopulate)
+                {
+                    db.Droids.RemoveRange(db.Droids);
+                    db.Humans.RemoveRange(db.Humans);
+                    db.Episodes.RemoveRange(db.Episodes);
+                    db.SaveChanges();
+                }
 
                 // Generation
                 var random = new Random(options.Seed);

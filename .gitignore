@@ -1,6 +1,9 @@
 # BenchmarkDotNet (custom for project)
 BenchmarkDotNet.Artifacts/
 
+# macOS
+.DS_Store
+
 ########################################
 
 # VSCode
